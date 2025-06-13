@@ -3,7 +3,7 @@ import time
 import os
 import subprocess
 from typing import Optional
-from camera.camera import Camera
+from app.camera.camera import Camera
 
 
 class TimelapseController:
