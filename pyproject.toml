@@ -1,0 +1,22 @@
+[project]
+name = "timelaps-raspberry"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "NikitaErmakov",email = "ermafin@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi (>=0.115.12,<0.116.0)",
+    "uvicorn (>=0.34.3,<0.35.0)",
+    "jinja2 (>=3.1.6,<4.0.0)",
+    "python-multipart (>=0.0.20,<0.0.21)",
+    "black (>=25.1.0,<26.0.0)",
+    "isort (>=6.0.1,<7.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
