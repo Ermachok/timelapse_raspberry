@@ -1,9 +1,10 @@
-import threading
-import time
 import os
 import subprocess
+import threading
+import time
 from typing import Optional
-from app.camera.camera import Camera
+
+from camera.camera import Camera
 
 
 class TimelapseController:
@@ -31,15 +32,17 @@ class TimelapseController:
         self.create_timelapse_video()
 
     def _worker(self):
-        while self.running:
-            filename = f"frame_{self.frame_counter:04d}.jpg"
-            path = os.path.join(self.camera.save_dir, filename)
+        with self.camera.lock:
             self.camera.picam2.start()
-            self.camera.picam2.capture_file(path)
-            self.camera.picam2.stop()
-            self.latest_photo = filename
-            self.frame_counter += 1
-            time.sleep(self.interval)
+            try:
+                while self.running:
+                    filename = f"frame_{self.frame_counter:04d}.jpg"
+                    self.camera.take_photo(filename)
+                    self.latest_photo = filename
+                    self.frame_counter += 1
+                    time.sleep(self.interval)
+            finally:
+                self.camera.picam2.stop()
 
     def get_latest_photo_path(self) -> Optional[str]:
         if self.latest_photo:
@@ -53,11 +56,15 @@ class TimelapseController:
         cmd = [
             "ffmpeg",
             "-y",
-            "-framerate", "5",
-            "-i", os.path.join(self.camera.save_dir, "frame_%04d.jpg"),
-            "-c:v", "libx264",
-            "-pix_fmt", "yuv420p",
-            self.video_path
+            "-framerate",
+            "5",
+            "-i",
+            os.path.join(self.camera.save_dir, "frame_%04d.jpg"),
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            self.video_path,
         ]
         try:
             subprocess.run(cmd, check=True)

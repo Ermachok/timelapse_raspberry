@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
-from app.timelapse.controller import TimelapseController
+from timelapse.controller import TimelapseController
 
 templates = Jinja2Templates(directory="web/templates")
 
